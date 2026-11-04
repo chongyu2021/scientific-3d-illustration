@@ -1,0 +1,14 @@
+# 渲染产物（一条命令即可重生成）
+examples/*/out/
+*.blend1
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 根目录的原始参考截图（已归档到 examples/*/reference.png）
+/*.png

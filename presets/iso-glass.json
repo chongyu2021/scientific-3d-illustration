@@ -1,0 +1,302 @@
+{
+  "name": "iso-glass",
+  "description": "Isometric glass-and-graphite research illustration. Translucent pale-blue free space, matte grey obstacles, crisp blue edge lines, soft studio lighting.",
+  "palette": {
+    "page": "#FFFFFF",
+    "ink": "#10243C",
+    "muted": "#4B6076",
+    "accent": "#154C8C",
+    "accent_light": "#E8F2FC",
+    "panel_bg": [
+      "#FDFEFF",
+      "#EDF6FF"
+    ],
+    "panel_border": "#9CC3E8",
+    "header": [
+      "#123C6E",
+      "#1D5FA6"
+    ],
+    "warn": "#D92B2B",
+    "static": "#1F5FBF",
+    "dynamic": "#E03131"
+  },
+  "camera": {
+    "type": "ortho",
+    "azimuth": -58.0,
+    "elevation": 34.0,
+    "distance": 30.0,
+    "ortho_scale": 8.0,
+    "target": [
+      3.0,
+      2.4,
+      1.0
+    ]
+  },
+  "lighting": {
+    "world": {
+      "color": [
+        0.84,
+        0.91,
+        1.0
+      ],
+      "strength": 0.85
+    },
+    "lights": [
+      {
+        "name": "key",
+        "type": "AREA",
+        "position": [
+          -4.5,
+          -7.0,
+          9.0
+        ],
+        "target": [
+          3.0,
+          2.5,
+          0.0
+        ],
+        "energy": 620.0,
+        "size": 8.0,
+        "color": [
+          1.0,
+          0.99,
+          0.97
+        ]
+      },
+      {
+        "name": "fill",
+        "type": "AREA",
+        "position": [
+          8.5,
+          -4.0,
+          4.5
+        ],
+        "target": [
+          3.0,
+          2.5,
+          0.5
+        ],
+        "energy": 220.0,
+        "size": 6.0,
+        "color": [
+          0.88,
+          0.94,
+          1.0
+        ]
+      },
+      {
+        "name": "rim",
+        "type": "AREA",
+        "position": [
+          1.0,
+          9.0,
+          6.0
+        ],
+        "target": [
+          3.0,
+          2.5,
+          1.0
+        ],
+        "energy": 360.0,
+        "size": 5.0,
+        "color": [
+          0.93,
+          0.97,
+          1.0
+        ]
+      }
+    ]
+  },
+  "edge": {
+    "enabled": true,
+    "width": 0.007,
+    "color": "#5E9ED6",
+    "emission": 1.0
+  },
+  "render": {
+    "engine": "cycles",
+    "device": "auto",
+    "samples": 128,
+    "denoise": true,
+    "transparent": true,
+    "view_transform": "Standard",
+    "exposure": 0.05,
+    "max_bounces": 12,
+    "transmission_bounces": 8,
+    "transparent_bounces": 12,
+    "filter_width": 1.4,
+    "resolution_scale": 2.0,
+    "shadow_catcher": false,
+    "shadow_strength": 0.22,
+    "freestyle": {
+      "enabled": false,
+      "thickness": 1.1,
+      "color": "#4C6C8A"
+    },
+    "save_version": 0
+  },
+  "materials": {
+    "glass_free": {
+      "kind": "glass",
+      "base_color": "#AED6F8",
+      "roughness": 0.22,
+      "transmission": 0.58,
+      "alpha": 0.62,
+      "ior": 1.33,
+      "specular": 0.2,
+      "coat": 0.05,
+      "emission": "#C9E6FF",
+      "emission_strength": 0.06,
+      "edge_color": "#4E90CC",
+      "edge_width": 0.007,
+      "bevel": 0.006,
+      "edge_alpha": 0.62
+    },
+    "glass_free_dim": {
+      "kind": "glass",
+      "base_color": "#D6E9FB",
+      "roughness": 0.32,
+      "transmission": 0.3,
+      "alpha": 0.26,
+      "ior": 1.33,
+      "specular": 0.2,
+      "emission": "#DDEEFF",
+      "emission_strength": 0.05,
+      "edge_color": "#9AC4E8",
+      "edge_width": 0.005,
+      "bevel": 0.012
+    },
+    "obstacle": {
+      "kind": "principled",
+      "base_color": "#8D949E",
+      "roughness": 0.74,
+      "metallic": 0.0,
+      "specular": 0.22,
+      "edge_color": "#49515D",
+      "edge_width": 0.0045,
+      "bevel": 0.005
+    },
+    "obstacle_light": {
+      "kind": "principled",
+      "base_color": "#AEB5BE",
+      "roughness": 0.68,
+      "metallic": 0.0,
+      "specular": 0.3,
+      "edge_color": "#6B7480",
+      "edge_width": 0.005,
+      "bevel": 0.008
+    },
+    "robot_body": {
+      "kind": "principled",
+      "base_color": "#F7FAFD",
+      "roughness": 0.3,
+      "metallic": 0.0,
+      "specular": 0.5,
+      "edge_color": "#63707E",
+      "edge_width": 0.004,
+      "bevel": 0.02,
+      "coat": 0.3
+    },
+    "robot_dark": {
+      "kind": "principled",
+      "base_color": "#232B34",
+      "roughness": 0.42,
+      "metallic": 0.15,
+      "specular": 0.45,
+      "edge_color": "#161C23",
+      "edge_width": 0.003,
+      "bevel": 0.015
+    },
+    "robot_accent": {
+      "kind": "principled",
+      "base_color": "#3F79B4",
+      "roughness": 0.26,
+      "metallic": 0.6,
+      "specular": 0.6,
+      "edge_color": "#1F4A72",
+      "edge_width": 0.003,
+      "bevel": 0.012
+    },
+    "point_static": {
+      "kind": "principled",
+      "base_color": "#1B54B0",
+      "roughness": 0.24,
+      "metallic": 0.0,
+      "specular": 0.55,
+      "emission": "#1B54B0",
+      "emission_strength": 0.45,
+      "coat": 0.45
+    },
+    "point_dynamic": {
+      "kind": "principled",
+      "base_color": "#DE2424",
+      "roughness": 0.26,
+      "metallic": 0.0,
+      "specular": 0.55,
+      "emission": "#DE2424",
+      "emission_strength": 1.0,
+      "coat": 0.45
+    },
+    "point_warn": {
+      "kind": "principled",
+      "base_color": "#F08C00",
+      "roughness": 0.3,
+      "metallic": 0.0,
+      "specular": 0.5,
+      "emission": "#F08C00",
+      "emission_strength": 0.35
+    },
+    "ray_history": {
+      "kind": "beam",
+      "base_color": "#3D80C8",
+      "alpha": 1.0,
+      "emission": "#2E6FBE",
+      "emission_strength": 0.75,
+      "roughness": 0.55
+    },
+    "ray_current": {
+      "kind": "beam",
+      "base_color": "#175AAE",
+      "alpha": 1.0,
+      "emission": "#175AAE",
+      "emission_strength": 0.85,
+      "roughness": 0.5
+    },
+    "path": {
+      "kind": "beam",
+      "base_color": "#154C8C",
+      "alpha": 1.0,
+      "emission": "#154C8C",
+      "emission_strength": 0.5,
+      "roughness": 0.4
+    },
+    "frustum": {
+      "kind": "glass",
+      "base_color": "#8FC0EA",
+      "roughness": 0.3,
+      "transmission": 0.25,
+      "alpha": 0.26,
+      "ior": 1.3,
+      "emission": "#8FC0EA",
+      "emission_strength": 0.08,
+      "edge_color": "#2F6EA5",
+      "edge_width": 0.005
+    },
+    "gauss": {
+      "kind": "glass",
+      "base_color": "#7EB9F0",
+      "roughness": 0.35,
+      "transmission": 0.15,
+      "alpha": 0.24,
+      "ior": 1.3,
+      "emission": "#7EB9F0",
+      "emission_strength": 0.2
+    },
+    "edge": {
+      "kind": "flat",
+      "base_color": "#5E9ED6",
+      "emission": "#5E9ED6",
+      "emission_strength": 0.85
+    }
+  }
+}

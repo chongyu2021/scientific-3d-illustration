@@ -1,0 +1,24 @@
+{
+  "skill_name": "scientific-3d-illustration",
+  "notes": "Forward-test prompts. Each should be run by an agent that has only the skill folder (no prior context). Inspect the rendered PNG, not just the JSON.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我做一张两栏的科研示意图：左栏画一个相机视锥在观察一片体素占据地图（灰色砖墙障碍物、蓝色半透明自由空间体素、墙面上若干蓝色回波点、空中两个红色动态点），右栏是同一个场景换一个方位角，用虚线框标出视锥并加一句中文说明。要等轴测、干净、能放进论文。",
+      "expected_output": "两栏 PNG：同一 world 两个相机、视锥几何正确、无穿模、中文标题与标注清晰、图例完整",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "单栏图：一个机器人带着激光雷达在房间里，画出 8 条激光射线打到两面砖墙上，墙面上有回波点，另用一个半透明高斯椭球表示定位不确定性。做成等轴测、透明背景 PNG。",
+      "expected_output": "单栏等轴测 PNG：射线端点落在墙面上、回波点贴合表面、椭球与机器人不穿模、check 通过",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我有一张现成的 scene.json（examples/dynamic-pointcloud-filter/scene.json），把第一栏的墙加高到 3 米、整个场景的相机方位角转到 -45 度、把动态点的颜色改成橙色，然后重新出图。不要重写场景。",
+      "expected_output": "用 edit/patch 修改原 JSON 后重新出图；几何仍然是同一套；check 仍然通过",
+      "files": ["examples/dynamic-pointcloud-filter/scene.json"]
+    }
+  ]
+}

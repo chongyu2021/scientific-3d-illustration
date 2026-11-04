@@ -1,0 +1,770 @@
+{
+  "version": 1,
+  "meta": {
+    "title": "基于时序几何一致性的动态点云过滤",
+    "slug": "dynamic-pointcloud-filter",
+    "description": "Three-stage research figure: historical free-space modelling, temporal geometric consistency check, dynamic point removal. One shared world, three cameras.",
+    "unit": "m"
+  },
+  "style": {
+    "preset": "iso-glass",
+    "overrides": {
+      "render": {
+        "samples": 160
+      }
+    }
+  },
+  "world": {
+    "voxel_size": 0.5,
+    "origin": [
+      0,
+      0,
+      0
+    ],
+    "objects": [
+      {
+        "id": "free_space",
+        "type": "voxels",
+        "layer": "free_space",
+        "mat": "glass_free",
+        "gap": 0.035,
+        "cells": {
+          "grids": [
+            {
+              "i": [
+                0,
+                11
+              ],
+              "j": [
+                0,
+                8
+              ],
+              "k": [
+                0,
+                0
+              ],
+              "exclude": [
+                {
+                  "i": [
+                    0,
+                    1
+                  ],
+                  "j": [
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "thickness": 0.28
+            }
+          ]
+        }
+      },
+      {
+        "id": "free_space_core",
+        "type": "voxels",
+        "layer": "free_space_core",
+        "mat": "glass_free",
+        "gap": 0.035,
+        "cells": {
+          "grids": [
+            {
+              "i": [
+                2,
+                5
+              ],
+              "j": [
+                4,
+                6
+              ],
+              "k": [
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "wall_a",
+        "type": "brick_wall",
+        "layer": "obstacles",
+        "mat": "obstacle",
+        "origin": [
+          0.5,
+          4.5,
+          0
+        ],
+        "axis": "x",
+        "length": 4.0,
+        "height": 2.5,
+        "thickness": 0.5,
+        "brick": [
+          1.0,
+          0.5
+        ],
+        "profile": [
+          2.0,
+          2.5,
+          2.5,
+          1.5,
+          1.0
+        ],
+        "gap": 0.024
+      },
+      {
+        "id": "wall_b",
+        "type": "brick_wall",
+        "layer": "obstacles",
+        "mat": "obstacle",
+        "origin": [
+          6.0,
+          1.0,
+          0
+        ],
+        "axis": "y",
+        "length": 3.5,
+        "height": 2.0,
+        "thickness": 0.5,
+        "brick": [
+          1.0,
+          0.5
+        ],
+        "profile": [
+          1.5,
+          2.0,
+          2.0,
+          1.5,
+          1.0
+        ],
+        "gap": 0.024
+      },
+      {
+        "id": "robot",
+        "type": "robot",
+        "layer": "robot",
+        "position": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "heading": 8,
+        "scale": 1.0
+      },
+      {
+        "id": "rays_history",
+        "type": "rays",
+        "layer": "rays_history",
+        "mat": "ray_history",
+        "from": [
+          0.5,
+          0.5,
+          0.62
+        ],
+        "radius": 0.019,
+        "arrow": true,
+        "arrow_size": 0.058,
+        "targets": [
+          [
+            1.45,
+            4.48,
+            0.55
+          ],
+          [
+            2.2,
+            4.48,
+            1.15
+          ],
+          [
+            3.05,
+            4.48,
+            1.95
+          ],
+          [
+            3.95,
+            4.48,
+            0.75
+          ],
+          [
+            5.98,
+            1.6,
+            0.9
+          ],
+          [
+            5.98,
+            2.6,
+            1.55
+          ],
+          [
+            5.98,
+            3.65,
+            1.1
+          ],
+          [
+            4.45,
+            4.48,
+            0.4
+          ]
+        ]
+      },
+      {
+        "id": "rays_current",
+        "type": "rays",
+        "layer": "rays_current",
+        "mat": "ray_current",
+        "from": [
+          0.5,
+          0.5,
+          0.62
+        ],
+        "radius": 0.022,
+        "arrow": true,
+        "arrow_size": 0.062,
+        "targets": [
+          [
+            2.2,
+            4.47,
+            1.15
+          ],
+          [
+            3.95,
+            4.47,
+            0.75
+          ],
+          [
+            5.97,
+            2.6,
+            1.55
+          ],
+          [
+            1.75,
+            2.75,
+            0.86
+          ]
+        ]
+      },
+      {
+        "id": "points_echo",
+        "type": "points",
+        "layer": "points_static",
+        "mat": "point_static",
+        "radius": 0.072,
+        "at": [
+          [
+            2.2,
+            4.48,
+            1.15
+          ],
+          [
+            3.95,
+            4.48,
+            0.75
+          ],
+          [
+            5.98,
+            2.6,
+            1.55
+          ],
+          [
+            1.45,
+            4.48,
+            0.55
+          ],
+          [
+            5.98,
+            3.65,
+            1.1
+          ],
+          [
+            4.45,
+            4.48,
+            0.4
+          ]
+        ],
+        "constraints": {
+          "on_surface_of": [
+            "wall_a",
+            "wall_b"
+          ],
+          "tolerance": 0.06
+        }
+      },
+      {
+        "id": "points_dynamic",
+        "type": "points",
+        "layer": "points_dynamic",
+        "mat": "point_dynamic",
+        "radius": 0.075,
+        "at": [
+          [
+            1.75,
+            2.75,
+            0.86
+          ],
+          [
+            2.25,
+            2.75,
+            0.86
+          ],
+          [
+            1.75,
+            3.25,
+            0.86
+          ]
+        ],
+        "constraints": {
+          "in_free_space": true,
+          "surface_margin": 0.05
+        }
+      },
+      {
+        "id": "points_map_a",
+        "type": "points",
+        "layer": "points_map",
+        "mat": "point_static",
+        "radius": 0.045,
+        "surface_sample": {
+          "of": "wall_a",
+          "faces": [
+            "-y"
+          ],
+          "count": 46,
+          "seed": 17,
+          "margin": 0.1,
+          "offset": 0.006
+        },
+        "constraints": {
+          "on_surface_of": [
+            "wall_a"
+          ],
+          "tolerance": 0.04
+        }
+      },
+      {
+        "id": "points_map_b",
+        "type": "points",
+        "layer": "points_map",
+        "mat": "point_static",
+        "radius": 0.045,
+        "surface_sample": {
+          "of": "wall_b",
+          "faces": [
+            "-x"
+          ],
+          "count": 30,
+          "seed": 23,
+          "margin": 0.1,
+          "offset": 0.006
+        },
+        "constraints": {
+          "on_surface_of": [
+            "wall_b"
+          ],
+          "tolerance": 0.04
+        }
+      }
+    ]
+  },
+  "views": [
+    {
+      "id": "stage1",
+      "pixel_scale": 1.75,
+      "camera": {
+        "type": "ortho",
+        "azimuth": -58,
+        "elevation": 40,
+        "ortho_scale": 8.0,
+        "target": [
+          3.12,
+          2.4,
+          1.15
+        ],
+        "fit": true,
+        "fit_margin": 0.02
+      },
+      "layers": [
+        "free_space",
+        "free_space_core",
+        "obstacles",
+        "robot",
+        "rays_history"
+      ]
+    },
+    {
+      "id": "stage2",
+      "pixel_scale": 1.75,
+      "camera": {
+        "type": "ortho",
+        "azimuth": -58,
+        "elevation": 40,
+        "ortho_scale": 8.0,
+        "target": [
+          3.12,
+          2.4,
+          1.15
+        ],
+        "fit": true,
+        "fit_margin": 0.02
+      },
+      "layers": [
+        "free_space",
+        "free_space_core",
+        "obstacles",
+        "robot",
+        "rays_current",
+        "points_static",
+        "points_dynamic"
+      ],
+      "ignore_clip": [
+        "wall_b"
+      ]
+    },
+    {
+      "id": "stage2_zoom",
+      "pixel_scale": 2.4,
+      "camera": {
+        "type": "ortho",
+        "azimuth": -58,
+        "elevation": 40,
+        "ortho_scale": 3.2,
+        "target": [
+          2.0,
+          2.76,
+          0.86
+        ]
+      },
+      "layers": [
+        "free_space_core",
+        "rays_current",
+        "points_dynamic"
+      ],
+      "ignore_clip": [
+        "free_space_core",
+        "rays_current"
+      ],
+      "shadow": false
+    },
+    {
+      "id": "stage3",
+      "pixel_scale": 1.75,
+      "camera": {
+        "type": "ortho",
+        "azimuth": -58,
+        "elevation": 40,
+        "ortho_scale": 7.6,
+        "target": [
+          3.28,
+          2.6,
+          1.28
+        ],
+        "fit": true,
+        "fit_margin": 0.025
+      },
+      "layers": [
+        "obstacles",
+        "points_static",
+        "points_map",
+        "points_dynamic",
+        "free_space_core"
+      ],
+      "ignore_clip": [
+        "wall_b"
+      ],
+      "dim": {
+        "glass_free": 0.3
+      }
+    }
+  ],
+  "figure": {
+    "size": [
+      3600,
+      1520
+    ],
+    "background": "#FFFFFF",
+    "title": {
+      "text": "基于时序几何一致性的动态点云过滤",
+      "size": 96,
+      "y": 42,
+      "color": "#0B2B4D"
+    },
+    "padding": 18,
+    "panels": [
+      {
+        "id": "p1",
+        "view": "stage1",
+        "rect": [
+          44,
+          210,
+          1164,
+          1460
+        ],
+        "header": {
+          "text": "（1）历史自由空间建模",
+          "height": 80,
+          "size": 50
+        },
+        "legend": {
+          "row_height": 62,
+          "size": 37,
+          "icon_size": 44,
+          "items": [
+            {
+              "icon": "ray_light",
+              "text": "历史激光射线（多帧累积）"
+            },
+            {
+              "icon": "voxel",
+              "text": "历史高置信自由空间"
+            },
+            {
+              "icon": "block",
+              "text": "静态障碍物"
+            }
+          ]
+        }
+      },
+      {
+        "id": "p2",
+        "view": "stage2",
+        "rect": [
+          1240,
+          210,
+          2360,
+          1460
+        ],
+        "header": {
+          "text": "（2）几何一致性检测",
+          "height": 80,
+          "size": 50
+        },
+        "legend": {
+          "row_height": 62,
+          "size": 37,
+          "icon_size": 44,
+          "items": [
+            {
+              "icon": "ray",
+              "text": "当前激光射线"
+            },
+            {
+              "icon": "point_static",
+              "text": "当前激光回波（静态）"
+            },
+            {
+              "icon": "point_dynamic",
+              "text": "当前激光回波（几何冲突）"
+            }
+          ]
+        }
+      },
+      {
+        "id": "p3",
+        "view": "stage3",
+        "rect": [
+          2436,
+          210,
+          3556,
+          1460
+        ],
+        "header": {
+          "text": "（3）动态点云过滤与建图",
+          "height": 80,
+          "size": 50
+        },
+        "legend": {
+          "row_height": 62,
+          "size": 37,
+          "icon_size": 44,
+          "items": [
+            {
+              "icon": "point_static",
+              "text": "静态点云（保留）"
+            },
+            {
+              "icon": "point_dynamic",
+              "text": "动态点云（剔除）"
+            },
+            {
+              "icon": "block",
+              "text": "静态结构地图"
+            }
+          ]
+        }
+      },
+      {
+        "id": "p2zoom",
+        "view": "stage2_zoom",
+        "overlay": true,
+        "rect": [
+          1876,
+          332,
+          2334,
+          892
+        ],
+        "padding": 10,
+        "radius": 10,
+        "border": "#D92B2B",
+        "border_width": 3.2,
+        "shadow_blur": 12
+      }
+    ],
+    "arrows": "auto",
+    "zoom_links": [
+      {
+        "from_panel": "p2",
+        "to_panel": "p2zoom",
+        "source_box": [
+          [
+            1.15,
+            2.15,
+            0.35
+          ],
+          [
+            2.55,
+            3.45,
+            1.25
+          ]
+        ],
+        "color": "#D92B2B",
+        "width": 3.0
+      }
+    ],
+    "callouts": [
+      {
+        "panel": "p2zoom",
+        "text": "历史自由空间",
+        "target": [
+          2.25,
+          2.75,
+          1.02
+        ],
+        "at": [
+          0.03,
+          0.03
+        ],
+        "size": 27
+      },
+      {
+        "panel": "p2zoom",
+        "text": "潜在动态回波",
+        "target": [
+          1.75,
+          2.75,
+          0.87
+        ],
+        "at": [
+          0.5,
+          0.76
+        ],
+        "size": 27
+      },
+      {
+        "panel": "p2zoom",
+        "text": "几何冲突",
+        "target": [
+          1.75,
+          2.75,
+          0.87
+        ],
+        "at": [
+          0.03,
+          0.34
+        ],
+        "size": 29,
+        "color": "#D92B2B",
+        "border": "#D92B2B",
+        "leader": true
+      },
+      {
+        "panel": "p3",
+        "text": "静态点云地图",
+        "target": [
+          2.95,
+          4.49,
+          1.85
+        ],
+        "at": [
+          0.56,
+          0.06
+        ],
+        "size": 34
+      },
+      {
+        "panel": "p3",
+        "text": "动态回波（剔除）",
+        "target": [
+          1.75,
+          2.75,
+          0.8
+        ],
+        "at": [
+          0.02,
+          0.05
+        ],
+        "size": 33,
+        "color": "#D92B2B",
+        "border": "#D92B2B"
+      }
+    ],
+    "chips": [
+      {
+        "rect": [
+          2490,
+          906,
+          2764,
+          972
+        ],
+        "text": "动态点剔除",
+        "size": 33
+      },
+      {
+        "rect": [
+          2490,
+          1006,
+          2764,
+          1072
+        ],
+        "text": "位姿估计",
+        "size": 33
+      },
+      {
+        "rect": [
+          2490,
+          1106,
+          2764,
+          1172
+        ],
+        "text": "地图更新",
+        "size": 33
+      }
+    ],
+    "extra_arrows": [
+      {
+        "from": [
+          2627,
+          978
+        ],
+        "to": [
+          2627,
+          1000
+        ],
+        "width": 26,
+        "head": 20,
+        "notch": 7
+      },
+      {
+        "from": [
+          2627,
+          1078
+        ],
+        "to": [
+          2627,
+          1100
+        ],
+        "width": 26,
+        "head": 20,
+        "notch": 7
+      }
+    ]
+  }
+}
